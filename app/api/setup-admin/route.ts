@@ -15,10 +15,10 @@ export async function GET(req: NextRequest) {
     const passwordHash = await bcrypt.hash("Admin123!", 10);
 
     const admin = await prisma.adminUser.upsert({
-      where: { email: "admin@redpol.pl" },
+      where: { email: "admin@redpol.icu" },
       update: {},
       create: {
-        email: "admin@redpol.pl",
+        email: "admin@redpol.icu",
         fullName: "Administrator",
         passwordHash,
         role: AdminRole.SUPER_ADMIN,
@@ -31,7 +31,7 @@ export async function GET(req: NextRequest) {
       message: "Admin utworzony",
       admin,
       login: {
-        email: "admin@redpol.pl",
+        email: "admin@redpol.icu",
         password: "Admin123!",
       },
     });
