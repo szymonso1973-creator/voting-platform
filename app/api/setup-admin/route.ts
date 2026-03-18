@@ -33,7 +33,7 @@ export async function GET(req: NextRequest) {
     });
 
     const voter = await prisma.voter.upsert({
-      where: { email: "glosujacy@redpol.pl" },
+      where: { email: "glosujacy@redpol.icu" },
       update: {
         orgId: organization.id,
         fullName: "Jan Kowalski",
@@ -43,7 +43,7 @@ export async function GET(req: NextRequest) {
       create: {
         orgId: organization.id,
         fullName: "Jan Kowalski",
-        email: "glosujacy@redpol.pl",
+        email: "glosujacy@redpol.icu",
         identifier: "USR-001",
         shares: "120 udziałów",
       },
