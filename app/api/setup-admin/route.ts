@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient, AdminRole } from "@prisma/client";
-import bcrypt from "bcryptjs";
+import { hashPassword } from "@/lib/admin-auth";
 
 const prisma = new PrismaClient();
 
@@ -12,11 +12,15 @@ export async function GET(req: NextRequest) {
   }
 
   try {
-    const passwordHash = await bcrypt.hash("Admin123!", 10);
+    const passwordHash = hashPassword("Admin123!");
 
     const admin = await prisma.adminUser.upsert({
       where: { email: "admin@redpol.icu" },
-      update: {},
+      update: {
+        passwordHash,
+        role: AdminRole.SUPER_ADMIN,
+        isActive: true,
+      },
       create: {
         email: "admin@redpol.icu",
         fullName: "Administrator",
@@ -29,7 +33,11 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({
       success: true,
       message: "Admin utworzony",
-      admin,
+      admin: {
+        id: admin.id,
+        email: admin.email,
+        role: admin.role,
+      },
       login: {
         email: "admin@redpol.icu",
         password: "Admin123!",
