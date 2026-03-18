@@ -14,11 +14,11 @@ export async function GET(req: NextRequest) {
   try {
     const passwordHash = await bcrypt.hash("Admin123!", 10);
 
-    await prisma.adminUser.upsert({
-      where: { email: "admin@redpol.icu" },
+    const admin = await prisma.adminUser.upsert({
+      where: { email: "admin@redpol.pl" },
       update: {},
       create: {
-        email: "admin@redpol.icu",
+        email: "admin@redpol.pl",
         fullName: "Administrator",
         passwordHash,
         role: AdminRole.SUPER_ADMIN,
@@ -29,15 +29,20 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({
       success: true,
       message: "Admin utworzony",
+      admin,
       login: {
-        email: "admin@redpol.icu",
+        email: "admin@redpol.pl",
         password: "Admin123!",
       },
     });
   } catch (e) {
-    console.error(e);
+    console.error("SETUP_ADMIN_ERROR", e);
+
     return NextResponse.json(
-      { error: "Błąd tworzenia admina" },
+      {
+        error: "Błąd tworzenia admina",
+        details: e instanceof Error ? e.message : String(e),
+      },
       { status: 500 }
     );
   }
